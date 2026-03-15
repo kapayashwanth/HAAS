@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HAAS Web</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --ink: #12263a;
+            --muted: #4f6272;
+            --brand: #0e7490;
+            --brand-dark: #155e75;
+            --ok: #0f766e;
+            --warn: #b45309;
+            --error: #b91c1c;
+            --line: #dbe5ee;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: radial-gradient(circle at top right, #dff4ff 0%, var(--bg) 42%);
+            color: var(--ink);
+        }
+
+        .wrap {
+            max-width: 1150px;
+            margin: 28px auto;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(25, 65, 95, 0.08);
+            padding: 18px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: 0.2px;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #1f3950;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            border: 1px solid #cfe0ed;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            background: #fbfdff;
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+            color: white;
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .grid4 {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .metric {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px;
+            background: #fbfdff;
+        }
+
+        .metric .k {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .metric .v {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .ok {
+            color: var(--ok);
+        }
+
+        .warn {
+            color: var(--warn);
+        }
+
+        .error {
+            color: var(--error);
+        }
+
+        pre {
+            white-space: pre-wrap;
+            margin: 0;
+            border: 1px solid var(--line);
+            background: #f7fbff;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        .errbox {
+            border: 1px solid #fecaca;
+            background: #fff1f2;
+            color: #9f1239;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .report {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #ecfeff;
+            border: 1px solid #bae6fd;
+            color: #0c4a6e;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+
+            form,
+            .grid4 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="card">
+            <h1>Handwritten Answer Assessment System (HAAS)</h1>
+            <div class="sub">Web application mode for Railway deployment</div>
+        </div>
+
+        <div class="card">
+            {% if error %}
+            <div class="errbox">{{ error }}</div>
+            {% endif %}
+            <form method="post" action="/evaluate" enctype="multipart/form-data">
+                <div>
+                    <label>Student Name</label>
+                    <input type="text" name="student_name" value="{{ student_name }}" />
+                </div>
+                <div>
+                    <label>Max Marks</label>
+                    <input type="number" name="max_marks" step="0.5" min="1" value="{{ max_marks }}" />
+                </div>
+                <div class="full">
+                    <label>Question</label>
+                    <input type="text" name="question" value="{{ question }}" />
+                </div>
+                <div class="full">
+                    <label>Model Answer</label>
+                    <textarea name="model_answer" required>{{ model_answer }}</textarea>
+                </div>
+                <div class="full">
+                    <label>Upload Handwritten Answer Image</label>
+                    <input type="file" name="image_file" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp" required />
+                </div>
+                <div class="full">
+                    <label><input type="checkbox" name="create_pdf" value="true" /> Generate PDF report</label>
+                </div>
+                <div class="full">
+                    <button class="btn" type="submit">Evaluate Answer</button>
+                </div>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="card">
+            <div class="grid4">
+                <div class="metric">
+                    <div class="k">Final Marks</div>
+                    <div class="v">{{ result.result.marks }} / {{ result.result.max_marks }}</div>
+                </div>
+                <div class="metric">
+                    <div class="k">Grade</div>
+                    <div
+                        class="v {% if result.result.grade in ['A+','A','B'] %}ok{% elif result.result.grade in ['C','D'] %}warn{% else %}error{% endif %}">
+                        {{ result.result.grade }}</div>
+                </div>
+                <div class="metric">
+                    <div class="k">Final Score</div>
+                    <div class="v">{{ result.result.percentage }}%</div>
+                </div>
+                <div class="metric">
+                    <div class="k">Semantic Score</div>
+                    <div class="v">{{ (result.result.semantic_score * 100) | round(2) }}%</div>
+                </div>
+            </div>
+            <div class="metric" style="margin-bottom:14px;">
+                <div class="k">Feedback</div>
+                <div class="v" style="font-size:16px; font-weight:600;">{{ result.result.feedback }}</div>
+            </div>
+            <div class="metric" style="margin-bottom:14px;">
+                <div class="k">Similarity Breakdown</div>
+                <div style="margin-top:8px; font-size:14px; line-height:1.7;">
+                    Semantic: {{ (result.breakdown.semantic * 100) | round(2) }}%<br />
+                    Token Sort: {{ (result.breakdown.token_sort * 100) | round(2) }}%<br />
+                    Partial: {{ (result.breakdown.partial * 100) | round(2) }}%<br />
+                    Jaccard: {{ (result.breakdown.jaccard * 100) | round(2) }}%
+                </div>
+            </div>
+            <label>Extracted OCR Text</label>
+            <pre>{{ result.raw_text }}</pre>
+            {% if result.report_path %}
+            <div class="report">PDF created at: {{ result.report_path }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
